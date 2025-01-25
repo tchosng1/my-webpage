@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美人鱼的秘密世界</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #87CEEB, #1E90FF);
+            color: #333;
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+        }
+
+        .story-header {
+            padding: 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .story-header h1 {
+            font-size: 3rem;
+            color: #FF69B4;
+        }
+
+        .story-header p {
+            font-size: 1.2rem;
+        }
+
+        .story-content {
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .story-content img {
+            width: 100%;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .quiz-section {
+            margin: 30px auto;
+            padding: 20px;
+            max-width: 600px;
+            background: rgba(255, 182, 193, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .quiz-section h2 {
+            font-size: 1.8rem;
+            color: #fff;
+        }
+
+        .quiz-section button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #FF69B4;
+            color: #fff;
+            transition: transform 0.2s ease;
+        }
+
+        .quiz-section button:hover {
+            transform: scale(1.1);
+        }
+
+        .quiz-section .answer {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 10px;
+            background: #4CAF50;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <header class="story-header">
+        <h1>美人鱼的秘密世界</h1>
+        <p>欢迎来到美人鱼的故事！探索她们的神秘海洋世界。</p>
+        <p><a href="../index.html" style="color: #4CAF50; text-decoration: none;">返回目录</a></p>
+    </header>
+
+    <main>
+        <section class="story-content">
+            <h2>美人鱼的故事</h2>
+            <p>在很久很久以前，大海深处住着美丽的美人鱼，她们拥有如水晶般闪耀的鳞片，长发飘逸如海草。</p>
+            <img src="../resources/mermaid-1.jpg" alt="美人鱼图片">
+            <p>美人鱼喜欢唱歌，她们的歌声会吸引海洋里的动物，甚至也会吸引迷失的水手。但不要担心，美人鱼是善良的生物，她们会帮助迷路的人找到归途。</p>
+            <p>有一天，小美人鱼阿莉娅遇到了一个神秘的宝箱，里面藏着一件特别的礼物！你能猜猜是什么吗？</p>
+        </section>
+
+        <section class="quiz-section">
+            <h2>小问答：美人鱼的秘密</h2>
+            <p>你知道美人鱼最喜欢的海洋朋友是谁吗？</p>
+            <button onclick="revealAnswer('答案是海豚！它们是美人鱼最好的朋友！')">海豚</button>
+            <button onclick="revealAnswer('答案是海龟！它们常常和美人鱼一起旅行！')">海龟</button>
+            <button onclick="revealAnswer('答案是章鱼！它们会和美人鱼一起探索深海。')">章鱼</button>
+            <p class="answer" id="quiz-answer"></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 美人鱼的秘密世界 | <a href="../index.html" style="color: #FFD700;">返回目录</a></p>
+    </footer>
+
+    <script>
+        function revealAnswer(message) {
+            document.getElementById('quiz-answer').innerText = message;
+        }
+    </script>
+</body>
+</html>

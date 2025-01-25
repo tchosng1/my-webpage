@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>勇敢少年与龙</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #2E2E2E, #000);
+            color: #EEE;
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+        }
+
+        .story-header {
+            padding: 20px;
+            text-align: center;
+            background: rgba(255, 69, 0, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .story-header h1 {
+            font-size: 3rem;
+            color: #FFD700;
+        }
+
+        .story-header p {
+            font-size: 1.2rem;
+        }
+
+        .story-content {
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            background: rgba(34, 34, 34, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .story-content img {
+            width: 100%;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .quiz-section {
+            margin: 30px auto;
+            padding: 20px;
+            max-width: 600px;
+            background: rgba(255, 69, 0, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .quiz-section h2 {
+            font-size: 1.8rem;
+            color: #FFD700;
+        }
+
+        .quiz-section button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #FF4500;
+            color: #EEE;
+            transition: transform 0.2s ease, background 0.3s;
+        }
+
+        .quiz-section button:hover {
+            transform: scale(1.1);
+            background: #D2691E;
+        }
+
+        .quiz-section .answer {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #FFD700;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 10px;
+            background: #333;
+            color: #EEE;
+        }
+    </style>
+</head>
+<body>
+    <header class="story-header">
+        <h1>勇敢少年与龙</h1>
+        <p>一个关于勇气与智慧的冒险故事，敢不敢一起来挑战？</p>
+        <p><a href="../index.html" style="color: #FFD700; text-decoration: none;">返回目录</a></p>
+    </header>
+
+    <main>
+        <section class="story-content">
+            <h2>冒险开始了！</h2>
+            <p>从前，有一个勇敢的少年叫凯文，他的村庄遭受了一头火龙的袭击。凯文没有退缩，而是拿起他的盾牌和剑，踏上了征服巨龙的旅途。</p>
+            <img src="../resources/kidvsdragon-1.jpg" alt="勇敢少年与龙">
+            <p>在龙的巢穴深处，火光熊熊，凯文面对的不仅是龙的怒火，还有自己内心的恐惧。他能否找到巨龙的弱点，保护村庄？</p>
+        </section>
+
+        <section class="quiz-section">
+            <h2>小问答：你会怎么做？</h2>
+            <p>如果你是凯文，面对火龙，你会选择什么武器？</p>
+            <button onclick="revealAnswer('好选择！盾牌可以保护自己，同时寻找攻击的机会！')">盾牌</button>
+            <button onclick="revealAnswer('大胆！弓箭需要精准的射击，但也要小心火焰！')">弓箭</button>
+            <button onclick="revealAnswer('勇敢！长剑需要靠近战斗，记得保持冷静！')">长剑</button>
+            <p class="answer" id="quiz-answer"></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 勇敢少年与龙 | <a href="../index.html" style="color: #FFD700;">返回目录</a></p>
+    </footer>
+
+    <script>
+        function revealAnswer(message) {
+            document.getElementById('quiz-answer').innerText = message;
+        }
+    </script>
+</body>
+</html>

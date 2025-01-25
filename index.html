@@ -3,158 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>美人鱼的秘密世界</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to bottom, #002f6c, #0058a3);
-            color: #fff;
-            text-align: center;
-        }
-
-        header {
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        header h1 {
-            font-size: 3rem;
-            color: #ffd700;
-        }
-
-        header p {
-            font-size: 1.2rem;
-            margin: 10px 0;
-        }
-
-        .intro {
-            padding: 40px 20px;
-            background: rgba(0, 0, 0, 0.5);
-            margin: 20px auto;
-            max-width: 800px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .intro h2 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
-
-        .intro p {
-            font-size: 1.2rem;
-            line-height: 1.8;
-        }
-
-        .interaction {
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 600px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .interaction p {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        .interaction button {
-            padding: 10px 20px;
-            background-color: #ffd700;
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .interaction button:hover {
-            background-color: #ffae00;
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .gallery img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
-        }
-
-        .gallery img:hover {
-            transform: scale(1.05);
-        }
-
-        footer {
-            margin-top: 40px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            font-size: 0.9rem;
-        }
-
-        footer a {
-            color: #ffd700;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <title>儿童故事集</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>美人鱼的秘密世界</h1>
-        <p>探索这些神秘生物的传说与魅力</p>
+        <h1>儿童故事集</h1>
+        <p>探索神奇的世界，进入有趣的故事冒险！</p>
     </header>
 
-    <section class="intro">
-        <h2>关于美人鱼</h2>
-        <p>
-            美人鱼是一种神秘的海洋生物，拥有一半人类一半鱼的特征。传说中，她们拥有动人的歌声和美丽的外表，
-            常常吸引水手前来，或是帮助迷失的人找到归路。
-        </p>
-        <p>
-            在世界各地的神话中，美人鱼以不同的形象出现。有些传说将她们描绘成海洋的守护者，
-            而另一些故事则讲述了她们的调皮和诡计。
-        </p>
-    </section>
-
-    <section class="interaction">
-        <h2>互动问答</h2>
-        <p>你知道美人鱼的传说起源于哪个地区吗？</p>
-        <button onclick="showAnswer()">点击查看答案</button>
-        <p id="answer" style="margin-top: 10px; display: none;">美人鱼的传说起源于多个地区，包括古希腊和中东的神话。</p>
-    </section>
-
-    <section class="gallery">
-        <img src="https://source.unsplash.com/400x400/?mermaid,sea" alt="美人鱼插画1">
-        <img src="https://source.unsplash.com/400x400/?ocean,underwater" alt="美人鱼插画2">
-        <img src="https://source.unsplash.com/400x400/?fantasy,mermaid" alt="美人鱼插画3">
-        <img src="https://source.unsplash.com/400x400/?coralreef,mermaid" alt="美人鱼插画4">
-    </section>
+    <main class="story-list">
+        <h2>选择一个故事开始吧：</h2>
+        <ul>
+            <li><a href="stories/mermaid.html">美人鱼的秘密世界</a></li>
+            <li><a href="stories/dragon.html">勇敢少年与龙</a></li>
+        </ul>
+    </main>
 
     <footer>
-        <p>
-            &copy; 2025 美人鱼世界 | 
-            <a href="https://zh.wikipedia.org/wiki/%E7%BE%8E%E4%BA%BA%E9%B1%BC" target="_blank">了解更多</a>
-        </p>
+        <p>&copy; 2025 儿童故事集 | <a href="#">联系我们</a></p>
     </footer>
-
-    <script>
-        function showAnswer() {
-            document.getElementById('answer').style.display = 'block';
-        }
-    </script>
 </body>
 </html>
