@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>白雪公主的魔法森林</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #FFD700, #FF69B4);
+            color: #333;
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+        }
+
+        .story-header {
+            padding: 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .story-header h1 {
+            font-size: 3rem;
+            color: #FF69B4;
+        }
+
+        .story-header p {
+            font-size: 1.2rem;
+        }
+
+        .story-content {
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .story-content img {
+            width: 100%;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .quiz-section {
+            margin: 30px auto;
+            padding: 20px;
+            max-width: 600px;
+            background: rgba(255, 182, 193, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .quiz-section h2 {
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        .quiz-section button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #FF69B4;
+            color: #fff;
+            transition: transform 0.2s ease, background 0.3s;
+        }
+
+        .quiz-section button:hover {
+            transform: scale(1.1);
+            background: #FF1493;
+        }
+
+        .quiz-section .answer {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 10px;
+            background: #4CAF50;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <header class="story-header">
+        <h1>白雪公主的魔法森林</h1>
+        <p>探索白雪公主与七个小矮人的奇幻冒险！</p>
+        <p><a href="../index.html" style="color: #FF1493; text-decoration: none;">返回目录</a></p>
+    </header>
+
+    <main>
+        <section class="story-content">
+            <h2>魔镜啊魔镜</h2>
+            <p>很久以前，一位邪恶的皇后拥有一面神奇的魔镜。每天，她都会问魔镜一个问题：‘魔镜啊魔镜，谁是这世上最美丽的人？’</p>
+            <img src="../resources/snowwhite-1.jpg" alt="白雪公主与魔法镜">
+            <p>当魔镜告诉她，白雪公主是世界上最美丽的人时，皇后心生妒忌，并试图用毒苹果陷害白雪公主。</p>
+        </section>
+
+        <section class="quiz-section">
+            <h2>小问答：如果你是白雪公主</h2>
+            <p>皇后给了你一个毒苹果，你会怎么做？</p>
+            <button onclick="revealAnswer('聪明的选择！不要随便吃陌生人的东西！')">拒绝苹果</button>
+            <button onclick="revealAnswer('小心！这个苹果看起来不太对劲。')">仔细检查苹果</button>
+            <button onclick="revealAnswer('哎呀！吃掉苹果后会有麻烦哦！')">吃掉苹果</button>
+            <p class="answer" id="quiz-answer"></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 白雪公主的魔法森林 | <a href="../index.html" style="color: #FFD700;">返回目录</a></p>
+    </footer>
+
+    <script>
+        function revealAnswer(message) {
+            document.getElementById('quiz-answer').innerText = message;
+        }
+    </script>
+</body>
+</html>
