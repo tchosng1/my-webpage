@@ -68,11 +68,6 @@
             background-color: #ff5722;
         }
 
-        .placeholder {
-            width: 50px;
-            height: 50px;
-        }
-
         .scoreboard {
             font-size: 1.2rem;
             margin-bottom: 10px;
@@ -100,18 +95,6 @@
         <p>Current Score: <span id="currentScore">0</span></p>
         <p>High Score: <span id="highScore">0</span></p>
     </div>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
-
-    <div class="directions">
-        <div class="row">
-          <button class="direction-button" onclick="changeDirection('ArrowUp')">↑</button>
-        </div>
-        <div class="row">
-          <button class="direction-button" onclick="changeDirection('ArrowLeft')">←</button>
-          <button class="direction-button" onclick="changeDirection('ArrowDown')">↓</button>
-          <button class="direction-button" onclick="changeDirection('ArrowRight')">→</button>
-        </div>
-      </div>
     
     <div class="controls">
         <button id="startButton" class="button">Start</button>
@@ -125,6 +108,19 @@
                 <option value="0" selected>No Speed Increase</option>
             </select>
         </label>
+    </div>
+
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+    <div class="directions">
+        <div class="row">
+          <button class="direction-button" onclick="changeDirection('ArrowUp')">↑</button>
+        </div>
+        <div class="row">
+          <button class="direction-button" onclick="changeDirection('ArrowLeft')">←</button>
+          <button class="direction-button" onclick="changeDirection('ArrowDown')">↓</button>
+          <button class="direction-button" onclick="changeDirection('ArrowRight')">→</button>
+        </div>
     </div>
 
     <script>
@@ -142,11 +138,11 @@
         let interval;
         let gameSpeed = parseInt(speedSelect.value);
         let noSpeedIncrease = false;
-        let highScores = { 300: 0, 200: 0, 150: 0, 100: 0, 0: 0 }; // High scores for each speed
+        let highScores = JSON.parse(localStorage.getItem('highScores')) || { 300: 0, 200: 0, 150: 0, 100: 0, 0: 0 };
 
         function drawSnake() {
             snake.forEach((segment, index) => {
-                ctx.fillStyle = index === 0 ? '#ff5722' : '#6ab04c'; // Snake head in different color
+                ctx.fillStyle = index === 0 ? '#ff5722' : '#6ab04c';
                 ctx.fillRect(segment.x, segment.y, 20, 20);
             });
         }
@@ -187,23 +183,11 @@
             }
         }
 
-        function checkCollision() {
-            const head = snake[0];
-
-            if (
-                head.x < 0 ||
-                head.y < 0 ||
-                head.x >= canvas.width ||
-                head.y >= canvas.height ||
-                snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)
-            ) {
-                clearInterval(interval);
-                if (score > highScores[gameSpeed]) {
-                    highScores[gameSpeed] = score;
-                    highScoreEl.textContent = highScores[gameSpeed];
-                }
-                alert(`Game Over! Your score: ${score}`);
-                resetGame();
+        function updateHighScore() {
+            if (score > highScores[gameSpeed]) {
+                highScores[gameSpeed] = score;
+                localStorage.setItem('highScores', JSON.stringify(highScores));
+                highScoreEl.textContent = highScores[gameSpeed];
             }
         }
 
@@ -214,10 +198,31 @@
             currentScoreEl.textContent = score;
             gameSpeed = parseInt(speedSelect.value);
             noSpeedIncrease = gameSpeed === 0;
-            if (noSpeedIncrease) gameSpeed = 200; // Default base speed for no-speed-increase mode
+            if (noSpeedIncrease) gameSpeed = 200;
             spawnFood();
-            highScoreEl.textContent = highScores[gameSpeed]; // Update the high score display
+            highScoreEl.textContent = highScores[gameSpeed] || 0;
         }
+
+        function checkCollision() {
+            const head = snake[0];
+        
+            if (
+                head.x < 0 ||
+                head.y < 0 ||
+                head.x >= canvas.width ||
+                head.y >= canvas.height ||
+                snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)
+            ) {
+                clearInterval(interval);
+                if (score > highScores[gameSpeed]) {
+                    highScores[gameSpeed] = score;
+                    localStorage.setItem('highScores', JSON.stringify(highScores)); // 保存到 localStorage
+                }
+                alert(`Game Over! Your score: ${score}`);
+                speedSelect.disabled = false; // 启用速度选择
+                resetGame();
+            }
+        }        
 
         function restartGame() {
             clearInterval(interval);
@@ -246,14 +251,18 @@
 
         startButton.addEventListener('click', () => {
             resetGame();
+            speedSelect.disabled = true; // 禁用速度选择
             restartGame();
         });
 
         speedSelect.addEventListener('change', () => {
+            if (speedSelect.disabled) return; // 如果禁用则直接返回
             gameSpeed = parseInt(speedSelect.value);
             noSpeedIncrease = gameSpeed === 0;
             if (noSpeedIncrease) gameSpeed = 200;
-            restartGame();
+        
+            // 更新高分显示，但不自动开始游戏
+            highScoreEl.textContent = highScores[gameSpeed] || 0;
         });
 
         window.addEventListener('keydown', e => changeDirection(e.key));
@@ -261,7 +270,7 @@
         resetGame();
     </script>
 
-    <footer>
+    <footer style="padding-top: 100px;">
         <p>&copy; 2025 贪吃蛇小游戏 | <a href="../index.html" style="color: #FFD700;">返回目录</a></p>
     </footer>
 </body>
