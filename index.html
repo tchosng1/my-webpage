@@ -3,26 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>儿童故事集</title>
+    <title>儿童故事与游戏目录</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fef6e4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #ffcccb;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: #d7385e;
+        }
+
+        main {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .treeview {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 300px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .treeview li {
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+
+        .treeview li:last-child {
+            border-bottom: none;
+        }
+
+        .treeview input[type="checkbox"] {
+            display: none;
+        }
+
+        .treeview label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            background-color: #fef6e4;
+            transition: background-color 0.3s;
+        }
+
+        .treeview label:hover {
+            background-color: #ffdccd;
+        }
+
+        .treeview label::before {
+            content: "▶";
+            margin-right: 10px;
+            transition: transform 0.2s;
+        }
+
+        .treeview input[type="checkbox"]:checked + label::before {
+            transform: rotate(90deg);
+        }
+
+        .treeview ul {
+            display: none;
+            padding-left: 20px;
+            background-color: #fff;
+        }
+
+        .treeview input[type="checkbox"]:checked ~ ul {
+            display: block;
+        }
+
+        .treeview a {
+            text-decoration: none;
+            font-size: 1rem;
+            color: #333;
+            background-color: #ffe6c8;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 5px 0;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .treeview a:hover {
+            background-color: #ff9248;
+            transform: scale(1.05);
+            color: #fff;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #ffcccb;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>儿童故事集</h1>
-        <p>探索神奇的世界，进入有趣的故事冒险！</p>
+        <h1>儿童故事与游戏目录</h1>
     </header>
-
-    <main class="story-list">
-        <h2>选择一个故事开始吧：</h2>
-        <ul>
-            <li><a href="stories/mermaid.html">美人鱼的秘密世界</a></li>
-            <li><a href="stories/dragon.html">勇敢少年与龙</a></li>
-            <li><a href="stories/snowwhite.html">白雪公主的魔法森林</a></li>
+    <main>
+        <ul class="treeview">
+            <li>
+                <input type="checkbox" id="stories">
+                <label for="stories">故事</label>
+                <ul>
+                    <li><a href="stories/mermaid.html">美人鱼的奇幻冒险</a></li>
+                    <li><a href="stories/kidvsdragon.html">勇敢少年与龙</a></li>
+                    <li><a href="stories/snowwhite.html">白雪公主的魔法森林</a></li>
+                </ul>
+            </li>
+            <li>
+                <input type="checkbox" id="games">
+                <label for="games">游戏</label>
+                <ul>
+                    <li><a href="games/snake_game.html">贪吃蛇小游戏</a></li>
+                </ul>
+            </li>
         </ul>
     </main>
-
     <footer>
-        <p>&copy; 2025 儿童故事集 | <a href="#">联系我们</a></p>
+        <p>&copy; 2025 儿童故事与游戏</p>
     </footer>
 </body>
 </html>

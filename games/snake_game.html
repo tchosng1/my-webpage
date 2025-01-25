@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #fef6e4;
+        }
+
+        canvas {
+            border: 2px solid #333;
+            background-color: #d4f1f4;
+        }
+
+        .controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .button {
+            padding: 10px 15px;
+            background-color: #ff9248;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #ff5722;
+        }
+
+        .directions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .direction-button {
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+      
+        .direction-button:hover {
+            background-color: #ff5722;
+        }
+
+        .placeholder {
+            width: 50px;
+            height: 50px;
+        }
+
+        .scoreboard {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .return-link {
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+
+        .return-link a {
+            text-decoration: none;
+            color: #ff5722;
+            font-weight: bold;
+        }
+
+        .return-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="scoreboard">
+        <p>Current Score: <span id="currentScore">0</span></p>
+        <p>High Score: <span id="highScore">0</span></p>
+    </div>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+    <div class="directions">
+        <div class="row">
+          <button class="direction-button" onclick="changeDirection('ArrowUp')">↑</button>
+        </div>
+        <div class="row">
+          <button class="direction-button" onclick="changeDirection('ArrowLeft')">←</button>
+          <button class="direction-button" onclick="changeDirection('ArrowDown')">↓</button>
+          <button class="direction-button" onclick="changeDirection('ArrowRight')">→</button>
+        </div>
+      </div>
+    
+    <div class="controls">
+        <button id="startButton" class="button">Start</button>
+        <label>
+            Speed: 
+            <select id="speedSelect" class="button">
+                <option value="300">Very Slow</option>
+                <option value="200">Slow</option>
+                <option value="150">Medium</option>
+                <option value="100">Fast</option>
+                <option value="0" selected>No Speed Increase</option>
+            </select>
+        </label>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startButton = document.getElementById('startButton');
+        const speedSelect = document.getElementById('speedSelect');
+        const currentScoreEl = document.getElementById('currentScore');
+        const highScoreEl = document.getElementById('highScore');
+
+        let snake = [{ x: 200, y: 200 }];
+        let direction = 'ArrowRight';
+        let food = { x: 0, y: 0 };
+        let score = 0;
+        let interval;
+        let gameSpeed = parseInt(speedSelect.value);
+        let noSpeedIncrease = false;
+        let highScores = { 300: 0, 200: 0, 150: 0, 100: 0, 0: 0 }; // High scores for each speed
+
+        function drawSnake() {
+            snake.forEach((segment, index) => {
+                ctx.fillStyle = index === 0 ? '#ff5722' : '#6ab04c'; // Snake head in different color
+                ctx.fillRect(segment.x, segment.y, 20, 20);
+            });
+        }
+
+        function drawFood() {
+            ctx.beginPath();
+            ctx.arc(food.x + 10, food.y + 10, 10, 0, Math.PI * 2);
+            ctx.fillStyle = '#e74c3c';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function spawnFood() {
+            food.x = Math.floor(Math.random() * 20) * 20;
+            food.y = Math.floor(Math.random() * 20) * 20;
+        }
+
+        function updateSnake() {
+            const head = { ...snake[0] };
+
+            if (direction === 'ArrowRight') head.x += 20;
+            if (direction === 'ArrowLeft') head.x -= 20;
+            if (direction === 'ArrowUp') head.y -= 20;
+            if (direction === 'ArrowDown') head.y += 20;
+
+            snake.unshift(head);
+
+            if (head.x === food.x && head.y === food.y) {
+                score++;
+                currentScoreEl.textContent = score;
+                spawnFood();
+                if (!noSpeedIncrease && gameSpeed > 50) {
+                    gameSpeed -= 10;
+                    restartGame();
+                }
+            } else {
+                snake.pop();
+            }
+        }
+
+        function checkCollision() {
+            const head = snake[0];
+
+            if (
+                head.x < 0 ||
+                head.y < 0 ||
+                head.x >= canvas.width ||
+                head.y >= canvas.height ||
+                snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y)
+            ) {
+                clearInterval(interval);
+                if (score > highScores[gameSpeed]) {
+                    highScores[gameSpeed] = score;
+                    highScoreEl.textContent = highScores[gameSpeed];
+                }
+                alert(`Game Over! Your score: ${score}`);
+                resetGame();
+            }
+        }
+
+        function resetGame() {
+            snake = [{ x: 200, y: 200 }];
+            direction = 'ArrowRight';
+            score = 0;
+            currentScoreEl.textContent = score;
+            gameSpeed = parseInt(speedSelect.value);
+            noSpeedIncrease = gameSpeed === 0;
+            if (noSpeedIncrease) gameSpeed = 200; // Default base speed for no-speed-increase mode
+            spawnFood();
+            highScoreEl.textContent = highScores[gameSpeed]; // Update the high score display
+        }
+
+        function restartGame() {
+            clearInterval(interval);
+            interval = setInterval(gameLoop, gameSpeed);
+        }
+
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawFood();
+            updateSnake();
+            drawSnake();
+            checkCollision();
+        }
+
+        function changeDirection(newDirection) {
+            const validDirections = {
+                ArrowUp: 'ArrowDown',
+                ArrowDown: 'ArrowUp',
+                ArrowLeft: 'ArrowRight',
+                ArrowRight: 'ArrowLeft'
+            };
+            if (direction !== validDirections[newDirection]) {
+                direction = newDirection;
+            }
+        }
+
+        startButton.addEventListener('click', () => {
+            resetGame();
+            restartGame();
+        });
+
+        speedSelect.addEventListener('change', () => {
+            gameSpeed = parseInt(speedSelect.value);
+            noSpeedIncrease = gameSpeed === 0;
+            if (noSpeedIncrease) gameSpeed = 200;
+            restartGame();
+        });
+
+        window.addEventListener('keydown', e => changeDirection(e.key));
+
+        resetGame();
+    </script>
+
+    <footer>
+        <p>&copy; 2025 贪吃蛇小游戏 | <a href="../index.html" style="color: #FFD700;">返回目录</a></p>
+    </footer>
+</body>
+</html>
