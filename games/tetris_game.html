@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>俄罗斯方块</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            background-color: #f4f6f8;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .button {
+            padding: 10px 15px;
+            background-color: #4caf50;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #388e3c;
+        }
+
+        .scoreboard {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        canvas {
+            border: 2px solid #333;
+            background-color: #e8e8e8;
+        }
+
+        .screen-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .control-button {
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .control-button:hover {
+            background-color: #ff5722;
+        }
+
+        @media (max-width: 600px) {
+            .button, .control-button {
+                font-size: 0.9rem;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button id="startButton" class="button">开始游戏</button>
+        <label>
+            游戏速度:
+            <select id="speedSelect" class="button">
+                <option value="800">慢</option>
+                <option value="500" selected>中</option>
+                <option value="300">快</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="scoreboard">
+        <p>当前分数: <span id="currentScore">0</span></p>
+        <p>最高分: <span id="highScore">0</span></p>
+    </div>
+
+    <canvas id="gameCanvas" width="300" height="600"></canvas>
+
+    <div class="screen-controls">
+        <div class="control-row">
+            <button class="control-button" id="rotateButton">↺</button>
+        </div>
+        <div class="control-row">
+            <button class="control-button" id="leftButton">←</button>
+            <button class="control-button" id="downButton">↓</button>
+            <button class="control-button" id="rightButton">→</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startButton = document.getElementById('startButton');
+        const speedSelect = document.getElementById('speedSelect');
+        const currentScoreEl = document.getElementById('currentScore');
+        const highScoreEl = document.getElementById('highScore');
+
+        const COLS = 10;
+        const ROWS = 20;
+        const BLOCK_SIZE = 30;
+        const localStorageKey = "tetrisHighScores";
+        let board = [];
+        let currentPiece = null;
+        let score = 0;
+        let gameSpeed = parseInt(speedSelect.value);
+        let highScores = JSON.parse(localStorage.getItem(localStorageKey)) || { 800: 0, 500: 0, 300: 0 };
+        let gameInterval;
+        let keyIntervals = {}; // 用于记录按键持续动作的状态
+
+        const TETROMINOS = [
+            [[0, 1, 0]],
+            [[1, 1, 0]],
+            [[1, 1, 1]],
+            [[1, 1, 1, 1]],
+            [[1, 1],
+             [1, 1]],
+            [[0, 1, 0],
+             [1, 1, 1]],
+            [[1, 0, 0],
+             [1, 1, 1]],
+            [[0, 0, 1],
+             [1, 1, 1]],
+            [[0, 1, 1],
+             [1, 1, 0]],
+            [[1, 1, 0],
+             [0, 1, 1]],
+            [[1, 0, 0],
+            [1, 0, 0],
+            [1, 1, 1]],
+            [[0, 0, 1],
+            [0, 0, 1],
+            [1, 1, 1]],
+            [[1, 0, 1],
+            [1, 0, 1],
+            [1, 1, 1]],
+        ];
+
+        function drawBlock(x, y, color = '#ff5722') {
+            ctx.fillStyle = color;
+            ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            ctx.strokeStyle = '#fff';
+            ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        }
+
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // 先清除画布
+            // 仅绘制固定方块
+            for (let y = 0; y < ROWS; y++) {
+                for (let x = 0; x < COLS; x++) {
+                    if (board[y][x]) drawBlock(x, y);
+                }
+            }
+            // 绘制当前活动方块
+            if (currentPiece) {
+                for (let y = 0; y < currentPiece.shape.length; y++) {
+                    for (let x = 0; x < currentPiece.shape[y].length; x++) {
+                        if (currentPiece.shape[y][x]) {
+                            drawBlock(currentPiece.x + x, currentPiece.y + y);
+                        }
+                    }
+                }
+            }
+        }
+
+        function createPiece() {
+            const shape = TETROMINOS[Math.floor(Math.random() * TETROMINOS.length)];
+            return {
+                shape,
+                x: Math.floor(COLS / 2) - Math.floor(shape[0].length / 2),
+                y: 0
+            };
+        }
+
+        function movePiece(dx, dy) {
+            currentPiece.x += dx;
+            currentPiece.y += dy;
+
+            if (checkCollision()) {
+                currentPiece.x -= dx;
+                currentPiece.y -= dy;
+                return false;
+            }
+            return true;
+        }
+
+        function rotatePiece() {
+            const rotated = currentPiece.shape[0].map((_, i) => currentPiece.shape.map(row => row[i]).reverse());
+            const originalShape = currentPiece.shape;
+            currentPiece.shape = rotated;
+
+            if (checkCollision()) {
+                currentPiece.shape = originalShape;
+            }
+        }
+
+        function checkCollision() {
+            for (let y = 0; y < currentPiece.shape.length; y++) {
+                for (let x = 0; x < currentPiece.shape[y].length; x++) {
+                    if (
+                        currentPiece.shape[y][x] &&
+                        (currentPiece.y + y >= ROWS ||
+                         currentPiece.x + x < 0 ||
+                         currentPiece.x + x >= COLS ||
+                         board[currentPiece.y + y][currentPiece.x + x])
+                    ) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function mergePiece() {
+            for (let y = 0; y < currentPiece.shape.length; y++) {
+                for (let x = 0; x < currentPiece.shape[y].length; x++) {
+                    if (currentPiece.shape[y][x]) {
+                        board[currentPiece.y + y][currentPiece.x + x] = 1;
+                    }
+                }
+            }
+        }
+
+        function clearLines() {
+            let clearedLines = 0;
+        
+            // 找到需要清除的行
+            const linesToClear = [];
+            for (let y = 0; y < ROWS; y++) {
+                if (board[y].every(cell => cell)) {
+                    linesToClear.push(y);
+                }
+            }
+        
+            if (linesToClear.length > 0) {
+                // 高亮显示需要清除的行
+                linesToClear.forEach(y => {
+                    for (let x = 0; x < COLS; x++) {
+                        drawBlock(x, y, "#FFEB3B"); // 黄色高亮色
+                    }
+                });
+        
+                // 延迟实际清除操作
+                setTimeout(() => {
+                    linesToClear.forEach(y => {
+                        board.splice(y, 1); // 删除整行
+                        board.unshift(new Array(COLS).fill(0)); // 在顶部添加空行
+                    });
+        
+                    clearedLines = linesToClear.length;
+        
+                    // 更新分数
+                    score += clearedLines * 10;
+                    currentScoreEl.textContent = score;
+        
+                    // 更新最高分
+                    if (score > highScores[gameSpeed]) {
+                        highScores[gameSpeed] = score;
+                        highScoreEl.textContent = score;
+                        localStorage.setItem(localStorageKey, JSON.stringify(highScores));
+                    }
+        
+                    drawBoard(); // 刷新画面
+                }, 300); // 动画延迟时间为 300ms
+            }
+        }
+
+        function drawBlock(x, y, color = '#ff5722') {
+            ctx.fillStyle = color;
+            ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            ctx.strokeStyle = '#fff';
+            ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        }
+
+        function resetGame() {
+            board = Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
+            currentPiece = createPiece();
+            score = 0;
+            currentScoreEl.textContent = score;
+            highScoreEl.textContent = highScores[gameSpeed];
+        }
+
+        function adjustSpeed() {
+            const speedLevels = [800, 700, 600, 500, 400, 300, 200, 100];
+            const levelThresholds = [0, 200, 500, 1000, 2000, 5000, 10000, 20000];
+        
+            for (let i = levelThresholds.length - 1; i >= 0; i--) {
+                if (score >= levelThresholds[i]) {
+                    gameSpeed = speedLevels[i];
+                    break;
+                }
+            }
+        }
+        
+        function gameLoop() {
+            if (!movePiece(0, 1)) {
+                mergePiece();
+                clearLines();
+                currentPiece = createPiece();
+                if (checkCollision()) {
+                    clearInterval(gameInterval);
+                    alert(`游戏结束！得分: ${score}`);
+                    resetGame();
+                }
+            }
+        
+            adjustSpeed(); // 根据当前得分调整速度
+            clearInterval(gameInterval); // 重置间隔
+            gameInterval = setInterval(gameLoop, gameSpeed); // 应用新速度
+        
+            drawBoard();
+        }
+
+        // 键盘控制事件
+        document.addEventListener('keydown', (e) => {
+            if (!keyIntervals[e.key]) {
+                if (e.key === 'ArrowLeft') keyIntervals[e.key] = setInterval(() => movePiece(-1, 0), 100);
+                if (e.key === 'ArrowRight') keyIntervals[e.key] = setInterval(() => movePiece(1, 0), 100);
+                if (e.key === 'ArrowDown') keyIntervals[e.key] = setInterval(() => movePiece(0, 1), 50);
+                if (e.key === 'ArrowUp') rotatePiece();
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            clearInterval(keyIntervals[e.key]);
+            delete keyIntervals[e.key];
+        });
+
+        // 屏幕按钮控制
+        document.getElementById('leftButton').addEventListener('mousedown', () => {
+            keyIntervals['left'] = setInterval(() => movePiece(-1, 0), 100);
+        });
+        document.getElementById('rightButton').addEventListener('mousedown', () => {
+            keyIntervals['right'] = setInterval(() => movePiece(1, 0), 100);
+        });
+        document.getElementById('downButton').addEventListener('mousedown', () => {
+            keyIntervals['down'] = setInterval(() => movePiece(0, 1), 50);
+        });
+        document.getElementById('rotateButton').addEventListener('mousedown', rotatePiece);
+
+        document.querySelectorAll('.control-button').forEach(button => {
+            button.addEventListener('mouseup', () => {
+                clearInterval(keyIntervals['left']);
+                clearInterval(keyIntervals['right']);
+                clearInterval(keyIntervals['down']);
+            });
+        });
+
+        startButton.addEventListener('click', () => {
+            resetGame();
+            clearInterval(gameInterval);
+            gameInterval = setInterval(gameLoop, gameSpeed);
+        });
+
+        speedSelect.addEventListener('change', () => {
+            gameSpeed = parseInt(speedSelect.value);
+            highScoreEl.textContent = highScores[gameSpeed] || 0;
+        });
+
+        resetGame();
+    </script>
+</body>
+</html>
